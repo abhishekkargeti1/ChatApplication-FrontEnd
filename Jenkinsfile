@@ -1,28 +1,36 @@
-pipeline{
+pipeline {
     agent {
         label "agent-1"
     }
+
     environment {
         IMAGE_NAME = "abhishekkargeti/chatapp-frontend-image"
         NAMESPACE  = "production-namespace"
-        DEPLOYMENT = "chataap-frontend-deployment"
+        DEPLOYMENT = "chatapp-frontend-server"
         CONTAINER  = "chat-app-frontend"
-        VERSION="1.3"
     }
-    stages{
-        stage("Code Cloning"){
-            steps{
-                sh 'echo "Code Cloning"'
-                git url :"https://github.com/abhishekkargeti1/ChatApplication-FrontEnd.git", branch:"main"
+
+    stages {
+
+        stage("Code Cloning") {
+            steps {
+                echo "Code Cloning"
+
+                git(
+                    url: "https://github.com/abhishekkargeti1/ChatApplication-FrontEnd.git",
+                    branch: "main"
+                )
             }
         }
-       stage("Install Dependencies") {
+
+        stage("Install Dependencies") {
             steps {
                 echo "Installing React dependencies"
 
                 sh 'npm install'
             }
         }
+
         stage("Build React Application") {
             steps {
                 echo "Building React application"
@@ -30,49 +38,71 @@ pipeline{
                 sh 'npm run build'
             }
         }
-        stage("Testing"){
-            steps{
-                sh 'echo "Code Testing"'
+
+        stage("Testing") {
+            steps {
+                echo "Code Testing"
             }
         }
+
         stage("Building Docker Image") {
             steps {
                 echo "Building Docker image"
 
-                sh '''
+                sh """
                     docker build \
                     -t ${IMAGE_NAME}:${BUILD_NUMBER} \
-                    -t ${IMAGE_NAME}:${VERSION} \
                     .
-                '''
+                """
             }
         }
-        stage("Pushing-Docker-Image"){
-            steps{
-                sh 'echo "Pushing Docker Image"'
-            withCredentials([
-             usernamePassword(
-                 credentialsId: 'DockerCred',
-                 usernameVariable: 'DOCKER_USERNAME',
-                 passwordVariable: 'DOCKER_PASSWORD'
-            )
-                ]){
-                    sh 'echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin'
-                    sh 'docker image tag ${IMAGE_NAME}:latest  abhishekkargeti/chatapp-frontend-image:${VERSION}'
-                    sh 'docker push abhishekkargeti/chatapp-frontend-image:${VERSION} '
-                    sh 'echo "Image Push Successfully"'
+
+        stage("Pushing Docker Image") {
+            steps {
+
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'DockerCred',
+                        usernameVariable: 'DOCKER_USERNAME',
+                        passwordVariable: 'DOCKER_PASSWORD'
+                    )
+                ]) {
+
+                    sh '''
+                        echo "$DOCKER_PASSWORD" | docker login \
+                        -u "$DOCKER_USERNAME" \
+                        --password-stdin
+                    '''
+
+                    sh """
+                        docker push ${IMAGE_NAME}:${BUILD_NUMBER}
+                    """
                 }
             }
-        } 
-        stage("Deployment"){
-            steps{
-                sh 'echo "Code Deployment"'
-                sh 'kubectl apply -f  /home/ubuntu/kubernetes/chat-application-frontend/${DEPLOYMENT}.yml '
-                
         }
-    }
+
+        stage("Deployment") {
+            steps {
+
+                echo "Deploying React application..."
+
+                sh """
+                    kubectl apply \
+                    -f /home/ubuntu/kubernetes/chat-application-frontend/${DEPLOYMENT}.yml
+
+                    kubectl set image deployment/${DEPLOYMENT} \
+                    ${CONTAINER}=${IMAGE_NAME}:${BUILD_NUMBER} \
+                    -n ${NAMESPACE}
+
+                    kubectl rollout status deployment/${DEPLOYMENT} \
+                    -n ${NAMESPACE}
+                """
+            }
+        }
+
         stage("Verify Deployment") {
             steps {
+
                 echo "Checking Kubernetes deployment..."
 
                 sh """
@@ -85,8 +115,7 @@ pipeline{
         }
     }
 
-
- post {
+    post {
 
         success {
             echo "CI/CD pipeline completed successfully!"
@@ -97,5 +126,3 @@ pipeline{
         }
     }
 }
-
-

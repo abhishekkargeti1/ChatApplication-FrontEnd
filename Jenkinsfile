@@ -7,7 +7,7 @@ pipeline{
         NAMESPACE  = "production-namespace"
         DEPLOYMENT = "chataap-frontend-deployment"
         CONTAINER  = "chat-app-frontend"
-        VERSION="1.0"
+        VERSION="1.1"
     }
     stages{
         stage("Code Cloning"){

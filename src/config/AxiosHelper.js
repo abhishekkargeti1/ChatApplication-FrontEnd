@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseURL = "http://chat-app-backend-service:8080";
+const baseURL = "/api";
 
 export const httpClient = axios.create({
   baseURL: baseURL,

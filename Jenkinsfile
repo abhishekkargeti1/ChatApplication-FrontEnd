@@ -36,6 +36,11 @@ pipeline {
                 echo "Building React application"
 
                 sh 'npm run build'
+
+                sh '''
+                    echo "Checking React build..."
+                    grep -o "/chatapp" dist/assets/*.js | head
+                '''
             }
         }
 

@@ -7,6 +7,7 @@ pipeline {
         IMAGE_NAME = "abhishekkargeti/chatapp-frontend-image"
         NAMESPACE  = "production-namespace"
         DEPLOYMENT = "chataap-frontend-deployment"
+        DEPLOYMENT = "chatapp-frontend-server"
         CONTAINER  = "chat-app-frontend"
     }
 
@@ -95,7 +96,7 @@ pipeline {
                     kubectl apply \
                     -f /home/ubuntu/kubernetes/chat-application-frontend/${DEPLOYMENT}.yml
 
-                    kubectl set image deployment/${DEPLOYMENT} \
+                    kubectl set image deployment/${DEPLOYMENT_NAME} \
                     ${CONTAINER}=${IMAGE_NAME}:${BUILD_NUMBER} \
                     -n ${NAMESPACE}
 

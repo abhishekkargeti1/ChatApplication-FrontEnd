@@ -66,7 +66,7 @@ pipeline{
         stage("Deployment"){
             steps{
                 sh 'echo "Code Deployment"'
-                sh 'kubectl apply -f  /home/ubuntu/kubernetes/chat-application-backend/${DEPLOYMENT}.yml '
+                sh 'kubectl apply -f  /home/ubuntu/kubernetes/chat-application-frontend/${DEPLOYMENT}.yml '
                 
         }
     }

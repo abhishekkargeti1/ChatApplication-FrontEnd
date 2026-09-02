@@ -2,7 +2,7 @@ import { httpClient } from "../config/AxiosHelper"
 
 export const createRoomService =async(roomDetails)=>{
     
-   const response=await httpClient.post(`/api/rooms`, roomDetails,{
+   const response=await httpClient.post(`/rooms`, roomDetails,{
     headers: {
         'Content-Type': 'text/plain'
       },
@@ -12,7 +12,7 @@ export const createRoomService =async(roomDetails)=>{
 
 export const joinChatService =async(roomId)=>{
     
-   const response=await httpClient.get(`/api/rooms/${roomId}`,{
+   const response=await httpClient.get(`/rooms/${roomId}`,{
     headers: {
         'Content-Type': 'text/plain'
       },
@@ -23,7 +23,7 @@ export const joinChatService =async(roomId)=>{
 
 export const getMessage =async(roomId,size=50,page=0)=>{
     
-   const response=await httpClient.get(`/api/rooms/${roomId}/messages?size=${size}&page=${page}`,{
+   const response=await httpClient.get(`/rooms/${roomId}/messages?size=${size}&page=${page}`,{
     headers: {
         'Content-Type': 'text/plain'
       },

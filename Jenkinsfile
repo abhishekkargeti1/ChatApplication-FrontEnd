@@ -7,6 +7,7 @@ pipeline{
         NAMESPACE  = "production-namespace"
         DEPLOYMENT = "chataap-frontend-deployment"
         CONTAINER  = "chat-app-frontend"
+        VERSION="1.0"
     }
     stages{
         stage("Code Cloning"){
@@ -40,8 +41,7 @@ pipeline{
 
                 sh '''
                     docker build \
-                    -t ${IMAGE_NAME}:${BUILD_NUMBER} \
-                    -t ${IMAGE_NAME}:latest \
+                    -t ${IMAGE_NAME}:${VERSION} \
                     .
                 '''
             }
@@ -57,8 +57,8 @@ pipeline{
             )
                 ]){
                     sh 'echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin'
-                    sh 'docker image tag ${IMAGE_NAME}:latest  abhishekkargeti/chatapp-frontend-image:latest'
-                    sh 'docker push abhishekkargeti/chatapp-frontend-image:latest '
+                    sh 'docker image tag ${IMAGE_NAME}:latest  abhishekkargeti/chatapp-frontend-image:${VERSION}'
+                    sh 'docker push abhishekkargeti/chatapp-frontend-image:${VERSION} '
                     sh 'echo "Image Push Successfully"'
                 }
             }

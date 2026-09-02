@@ -9,7 +9,7 @@ import { ChatProvider } from "./context/ChatContext.jsx";
 
 createRoot(document.getElementById("root")).render(
  
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.PROD ? "/chatapp" : "/"}>
       <Toaster position="top-right" />
       <ChatProvider>
         <Approutes />

@@ -100,7 +100,7 @@ pipeline {
                     ${CONTAINER}=${IMAGE_NAME}:${BUILD_NUMBER} \
                     -n ${NAMESPACE}
 
-                    kubectl rollout status deployment/${DEPLOYMENT} \
+                    kubectl rollout status deployment/${DEPLOYMENT_NAME} \
                     -n ${NAMESPACE}
                 """
             }

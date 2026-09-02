@@ -6,7 +6,7 @@ pipeline {
     environment {
         IMAGE_NAME = "abhishekkargeti/chatapp-frontend-image"
         NAMESPACE  = "production-namespace"
-        DEPLOYMENT = "chatapp-frontend-deployment"
+        DEPLOYMENT = "chataap-frontend-deployment"
         CONTAINER  = "chat-app-frontend"
     }
 

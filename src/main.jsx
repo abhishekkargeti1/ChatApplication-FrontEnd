@@ -7,9 +7,19 @@ import Approutes from "./config/Routes.jsx";
 import { Toaster } from "react-hot-toast";
 import { ChatProvider } from "./context/ChatContext.jsx";
 
+// createRoot(document.getElementById("root")).render(
+ 
+//     <BrowserRouter basename={import.meta.env.PROD ? "/chatapp" : "/"}>
+//       <Toaster position="top-right" />
+//       <ChatProvider>
+//         <Approutes />
+//       </ChatProvider>
+//     </BrowserRouter>
+
+// );
 createRoot(document.getElementById("root")).render(
  
-    <BrowserRouter basename={import.meta.env.PROD ? "/chatapp" : "/"}>
+    <BrowserRouter >
       <Toaster position="top-right" />
       <ChatProvider>
         <Approutes />

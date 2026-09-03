@@ -1,8 +1,8 @@
-import axios from 'axios';
+import axios from "axios";
 
-const baseURL = "/api";
+// Dynamically points to your Ingress URL host
+export const baseURL = "http://98.92.245.161:8080"; 
 
 export const httpClient = axios.create({
-  baseURL: baseURL,
+  baseURL: `${baseURL}/api`,
 });
-export { baseURL };

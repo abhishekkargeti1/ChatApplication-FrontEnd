@@ -4,11 +4,8 @@ metadata:
   name: chat-app-ingress
   namespace: chat-app
   annotations:
-    # Set HTTP 1.1 and upgrade headers for WebSockets
+    # Set HTTP 1.1 for WebSocket support (Upgrade headers are enabled automatically)
     nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      proxy_set_header Upgrade $http_upgrade;
-      proxy_set_header Connection "upgrade";
 
     # Timeouts for persistent WebSocket connections
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
@@ -24,7 +21,7 @@ spec:
   rules:
   - http:
       paths:
-      # 1. Frontend Route (Updated path to match Vite base /chatapp/)
+      # 1. Frontend Route
       - path: /chatapp
         pathType: Prefix
         backend:

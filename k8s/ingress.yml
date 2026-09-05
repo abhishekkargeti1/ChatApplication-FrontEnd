@@ -1,0 +1,49 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: chat-app-ingress
+  namespace: production-namespace
+  annotations:
+    # Set HTTP 1.1 for WebSocket upgrades
+    nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
+
+    # Timeouts for persistent WebSocket connections
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+
+    # Session affinity (sticky sessions required for SockJS polling fallbacks)
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/session-cookie-name: "route"
+    nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
+spec:
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+      # 1. Frontend Route (Port 80)
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: chat-app-frontend-service
+            port:
+              number: 80
+
+      # 2. REST API Route (Port 80 -> Internal Service 8080)
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: chat-app-backend-service
+            port:
+              number: 8080
+
+      # 3. SockJS / WebSocket Endpoint (Port 80 -> Internal Service 8080)
+      - path: /chat
+        pathType: Prefix
+        backend:
+          service:
+            name: chat-app-backend-service
+            port:
+              number: 8080

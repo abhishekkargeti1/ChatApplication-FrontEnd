@@ -4,15 +4,21 @@ metadata:
   name: chat-app-ingress
   namespace: chat-app
   annotations:
-    # Set HTTP 1.1 for WebSocket support (Upgrade headers are enabled automatically)
     nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
 
-    # Timeouts for persistent WebSocket connections
+    # Explicitly allow CORS on Ingress level
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, DELETE, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization"
+
+    # Pass host headers to backend
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    
+    # Websocket & Session Affinity
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
-
-    # Session affinity (sticky sessions required for SockJS polling fallbacks)
     nginx.ingress.kubernetes.io/affinity: "cookie"
     nginx.ingress.kubernetes.io/session-cookie-name: "route"
     nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
@@ -21,7 +27,6 @@ spec:
   rules:
   - http:
       paths:
-      # 1. Frontend Route
       - path: /chatapp
         pathType: Prefix
         backend:
@@ -30,7 +35,6 @@ spec:
             port:
               number: 80
 
-      # 2. REST API Route
       - path: /api
         pathType: Prefix
         backend:
@@ -39,7 +43,6 @@ spec:
             port:
               number: 8080
 
-      # 3. SockJS / WebSocket Endpoint
       - path: /chat
         pathType: Prefix
         backend:

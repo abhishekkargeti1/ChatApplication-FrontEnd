@@ -1,11 +1,8 @@
- import axios from "axios";
+import axios from "axios";
 
-// Dynamically points to your Ingress URL host
-export const baseURL = "http://3.92.146.31/:8080"; 
-// export const baseURL = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
-// console.log(baseURL)
+// Corrected URL (removed the trailing slash before :8080)
+export const baseURL = "http://3.92.146.31:8080"; 
+
 export const httpClient = axios.create({
   baseURL: `${baseURL}/api`,
 });
-
-

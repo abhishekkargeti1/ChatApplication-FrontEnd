@@ -46,4 +46,4 @@ spec:
           service:
             name: chat-app-backend-service
             port:
-              number: 8080
+              number: 8083

@@ -1,0 +1,22 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: chatapp-frontend-server
+  namespace: production-namespace
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: chat-app-frontend
+
+  template:
+    metadata:
+      name: chat-app-frontend
+      labels:
+        app: chat-app-frontend
+    spec:
+      containers:
+        - name: chat-app-frontend
+          image: abhishekkargeti/chatapp-frontend-image:latest
+          ports:
+            - containerPort: 80

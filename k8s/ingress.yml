@@ -4,11 +4,15 @@ metadata:
   name: chat-app-ingress
   namespace: chat-app
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    # Set HTTP 1.1 for WebSocket support (Upgrade headers are enabled automatically)
     nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
+
+    # Timeouts for persistent WebSocket connections
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+
+    # Session affinity (sticky sessions required for SockJS polling fallbacks)
     nginx.ingress.kubernetes.io/affinity: "cookie"
     nginx.ingress.kubernetes.io/session-cookie-name: "route"
     nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
@@ -17,14 +21,16 @@ spec:
   rules:
   - http:
       paths:
-      # Match /chatapp and captures anything following as $2
-      - path: /chatapp(/|$)(.*)
-        pathType: ImplementationSpecific
+      # 1. Frontend Route
+      - path: /chatapp
+        pathType: Prefix
         backend:
           service:
             name: chat-app-frontend-service
             port:
               number: 80
+
+      # 2. REST API Route
       - path: /api
         pathType: Prefix
         backend:
@@ -32,6 +38,8 @@ spec:
             name: chat-app-backend-service
             port:
               number: 8080
+
+      # 3. SockJS / WebSocket Endpoint
       - path: /chat
         pathType: Prefix
         backend:

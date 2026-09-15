@@ -22,7 +22,7 @@ spec:
   - http:
       paths:
       # 1. Frontend Route (Port 80)
-      - path: /
+      - path: /chatapp/
         pathType: Prefix
         backend:
           service:

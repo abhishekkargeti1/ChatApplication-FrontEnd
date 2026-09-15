@@ -17,6 +17,6 @@ spec:
     spec:
       containers:
         - name: chat-app-frontend
-          image: abhishekkargeti/chatapp-frontend-image:39
+          image: abhishekkargeti/chatapp-frontend-image:40
           ports:
             - containerPort: 80

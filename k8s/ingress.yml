@@ -19,10 +19,11 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - http:
+  - host: argocd.kargeti1.shop
+    http:
       paths:
       # 1. Frontend Route (Port 80)
-      - path: /chatapp/
+      - path: /chatapp
         pathType: Prefix
         backend:
           service:
